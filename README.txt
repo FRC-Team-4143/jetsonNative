@@ -1,3 +1,10 @@
+Proof of concept requires:
+CANBridge from https://github.com/FRC-Team-4143/CANBridge/tree/4143
+CTRE libraries from https://github.com/CrossTheRoadElec/Phoenix-Linux-SocketCAN-Example and Pheonix5 firmware
+REV libraries for libarm64
+allwpilib compiled with Simulation HAL
+
+
 # run canableStart.sh to get SocketCAN going
 ./canableStart.sh
 
