@@ -1,17 +1,21 @@
 #Proof of concept requires:
 #libCANBridge.so from https://github.com/FRC-Team-4143/CANBridge/tree/4143
-#(binary included in libbuild)
+#(arm64 binary included in libbuild dir)
 
 #build libhook.so with cmake: I can't figure out gradle cpp-library with aarch64
 cd libbuild
 cmake ..
 make
 
+copy either build.gradle.c++ or build.gradle.java to build.gradle
+
 #build with:
-./gradlew installFrcUserProgramReleaseExecutable
+./gradlew installFrcUserProgramReleaseExecutable  # for C++
+./gradlew build		# for JAVA
 
 #copy libraries to install dir
-cp libbuild/*.so build/install/frcUserProgram/release/lib/
+cp libbuild/*.so build/install/frcUserProgram/release/lib/   # for C++
+cp libbuild/*.so build/jni/release  				# for JAVA
 
 
 
@@ -24,8 +28,13 @@ export HALSIM_EXTENSIONS="libhalsim_ds_socket.so:libCANBridge.so"
 # must preload libhook.so to cause HAL_CreateSimDevice to always return zero for SPARK MAX
 # REV libraries use this to determine if they should actually interact with hardware or not
 
-cd ./build/install/frcUserProgram/release/lib/
-LD_LIBRARY_PATH=. LD_PRELOAD=libhook.so ./frcUserProgram
+#execute with
+#cd ./build/install/frcUserProgram/release/lib/  # for C++
+#LD_LIBRARY_PATH=. LD_PRELOAD=libhook.so ./frcUserProgram  # for C++
+
+#for JAVA
+# have to build/jni/release in path
+LD_LIBRARY_PATH=build/jni/release LD_PRELOAD=libbuild/libhook.so java -jar build/libs/jetsonNative.jar
 
 
 

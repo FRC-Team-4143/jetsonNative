@@ -15,8 +15,17 @@ int HAL_CreateSimDevice(const char* name) {
 			//printf("calling orig HAL_CreateSimDevice\n");
 			return origFunc(name);
 		} else {
-			printf("can't find orig HAL_CreateSimDevice\n");
-			return 0;
+			void* handle = dlopen("libwpiHal.so",RTLD_LAZY);
+			if(!handle) {
+				printf("dlopen failed\n");
+				return 0;
+			}
+			origFunc = dlsym(handle,"HAL_CreateSimDevice");
+			if(!origFunc) {
+				printf("can't find orig HAL_CreateSimDevice\n");
+				return 0;
+			}
+			return origFunc(name);
 		}
 	}
 }
