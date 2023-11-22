@@ -6,7 +6,7 @@
 
 int HAL_CreateSimDevice(const char* name) {
 	printf("HAL_CreateSimDevice: %s\n", name);
-	if(!strncmp(name, "SPARK", 5)) {  // pretend we are not in a simulation for REV
+	if(!strncmp(name, "SPARK", 5) || !strncmp(name, "navX", 4)) {  // pretend we are not in a simulation for REV
 		printf("skipping orig HAL_CreateSimDevice\n");
 		return 0;
 	} else {  			// otherwise act normal
