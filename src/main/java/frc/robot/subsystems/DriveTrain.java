@@ -86,6 +86,12 @@ differentialDrive1.setMaxOutput(1.0);
                 // pi
                 // in to meter conversion
 				SmartDashboard.putNumber("vel2 (m/s)", velocity2);
+                double position1 = motorController1.getSelectedSensorPosition(0);
+                position1 = position1 / 4096 * 4 * 3.1415926 / 39.37;
+				SmartDashboard.putNumber("pos1 (m)", position1);
+                double position2 = motorController2.getSelectedSensorPosition(0);
+                position2 = position2 / 4096 * 4 * 3.1415926 / 39.37;
+                SmartDashboard.putNumber("pos2 (m)", position2);
     }
 
     @Override
@@ -103,6 +109,18 @@ differentialDrive1.setMaxOutput(1.0);
     return run(() -> differentialDrive1.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble()))
         .withName("arcadeDrive");
   }
-
+  
+  public Command arcadeDriveCommand(double fwd, double rot) {
+    return run(() -> differentialDrive1.arcadeDrive(fwd, rot))
+        .withName("arcadeDrive");
+    }
+  
+ public Command zeroCommand() {
+    return startEnd(() -> {
+        motorController1.setSelectedSensorPosition(0);
+        motorController2.setSelectedSensorPosition(0);},
+		    () -> {})
+        .withName("Zero").ignoringDisable(true);
+  }
 }
 
