@@ -1,0 +1,5 @@
+*.log
+libbuild/*
+build/*
+.gradle
+*.json
