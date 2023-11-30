@@ -66,6 +66,7 @@ private final XboxController xboxController1 = new XboxController(0);
     SmartDashboard.putData("Shoot Command", m_shooter.shootCommand());
     SmartDashboard.putData("Reset wheel position",  m_driveTrain.resetWheelPos());
     SmartDashboard.putData("Drive distance",  m_driveTrain.driveDistance(1));
+    SmartDashboard.putData("Reset gyro",  m_driveTrain.resetGyro());
 
 
 
@@ -107,7 +108,7 @@ private final XboxController xboxController1 = new XboxController(0);
         m_driveTrain.arcadeDriveCommand(
             () -> -xboxController1.getLeftY(), () -> -xboxController1.getRightX()));
     new JoystickButton(xboxController1, Button.kX.value)
-        .whileTrue(m_shooter.shootCommand());
+        .whileTrue(m_driveTrain.DriveTrainVelocityCommand(2, 2));
 
 
 
