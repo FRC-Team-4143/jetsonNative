@@ -106,8 +106,8 @@ public class RobotContainer {
         m_driveTrain.arcadeDriveCommand(
             () -> -xboxController1.getLeftY(), () -> -xboxController1.getRightX()));
     new JoystickButton(xboxController1, Button.kX.value)
-        .whileTrue(m_driveTrain.zeroCommand().andThen(m_driveTrain.driveDistance(2)).andThen(m_driveTrain.ZeroGyro())
-            .andThen(m_driveTrain.driveAngle(85)).repeatedly());
+        .whileTrue(m_driveTrain.zeroCommand().andThen(m_driveTrain.drivePIDCommand(2,2,1,2)).andThen(m_driveTrain.ZeroGyro())
+            .andThen(m_driveTrain.driveAngle(75)).repeatedly());
     new JoystickButton(xboxController1, Button.kB.value)
         .whileTrue(m_driveTrain.zeroCommand().andThen(m_driveTrain.driveDistance(2)));
     new JoystickButton(xboxController1, Button.kA.value)
