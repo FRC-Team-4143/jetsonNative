@@ -160,11 +160,10 @@ void HAL_CloseSerial(int32_t handle, int32_t* status) {
 void HAL_SetPWMPosition(int32_t pwmPortHandle, double position,
                      int32_t* status) {
 	//  printf("Set PWM Position\n");
-	wiringPiSetupGpio();
+	wiringPiSetup();
 	pinMode(26, PWM_OUTPUT);
 	pwmSetMode(PWM_MODE_MS);
 	pwmSetClock(16);
 	delay(10);
 	pwmWrite(26,position*1023);
-	return 0;
 }
