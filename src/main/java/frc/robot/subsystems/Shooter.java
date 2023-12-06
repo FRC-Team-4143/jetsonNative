@@ -68,10 +68,14 @@ public class Shooter extends SubsystemBase {
   }
 
   public Command moveServo() {
-      return runOnce(() -> { feeder.set(0.8);
-      System.out.println("move servo command"); }
+      return runOnce(() -> { feeder.setPosition(0.8);}
       );
   }
+
+  public void disableServo() {
+	  feeder.setDisabled();
+  }
+
 
 }
 

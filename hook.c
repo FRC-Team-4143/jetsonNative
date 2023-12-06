@@ -8,7 +8,7 @@
 
 #define __USE_GNU
 #include <dlfcn.h>
-#include <wiringPi.h>
+#include <pigpio.h>
 
 int32_t HAL_CreateSimDevice(const char* name) {
 	printf("HAL_CreateSimDevice: %s\n", name);
@@ -106,6 +106,7 @@ HAL_ENUM(HAL_SerialPort) {
 */
 
 int serial_port = 0;
+int gpioInitialised = 0;
 
 int32_t HAL_InitializeSerialPort(int32_t port,
                                               int32_t* status) {
@@ -117,7 +118,6 @@ int32_t HAL_InitializeSerialPort(int32_t port,
 	}
 	set_interface_attribs (serial_port, 115200, 0);
 	set_blocking (serial_port, 0);
-
 	return 0;
 }
 
@@ -159,11 +159,20 @@ void HAL_CloseSerial(int32_t handle, int32_t* status) {
 
 void HAL_SetPWMPosition(int32_t pwmPortHandle, double position,
                      int32_t* status) {
-	//  printf("Set PWM Position\n");
-	wiringPiSetup();
-	pinMode(26, PWM_OUTPUT);
-	pwmSetMode(PWM_MODE_MS);
-	pwmSetClock(16);
-	delay(10);
-	pwmWrite(26,position*1023);
+	printf("Set PWM Position: %lf\n", position);
+	if(!gpioInitialised){
+		gpioInitialise();
+		gpioInitialised = 1;
+	}
+	gpioServo(14, position*1000+1000);
 }
+
+void HAL_SetPWMDisabled(int32_t pwmPortHandle, int32_t* status) {
+	printf("PWM Disable");
+	if(!gpioInitialised){
+		gpioInitialise();
+		gpioInitialised = 1;
+	}
+	gpioServo(14, 0);
+}
+

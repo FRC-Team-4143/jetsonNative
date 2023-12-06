@@ -67,6 +67,8 @@ public class Robot extends TimedRobot {
     */
     @Override
     public void disabledInit() {
+	System.out.println("Robot Disabled");
+	m_robotContainer.m_shooter.disableServo();	
     }
 
     @Override

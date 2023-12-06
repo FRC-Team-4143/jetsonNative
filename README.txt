@@ -2,6 +2,13 @@
 #libCANBridge.so from https://github.com/FRC-Team-4143/CANBridge/tree/4143
 #(arm64 binary included in libbuild dir)
 
+# Download and install pigpio lib
+wget https://github.com/joan2937/pigpio/archive/master.zip
+unzip master.zip
+cd pigpio-master
+make
+sudo make install
+
 #build libhook.so with cmake: I can't figure out gradle cpp-library with aarch64
 cd libbuild
 cmake ..
