@@ -180,7 +180,7 @@ public class DriveTrain extends SubsystemBase {
     public Command driveAngle(double angle) {
         BooleanSupplier angleReached = () -> navxangle > angle + startangle;
         return run(() -> {
-            differentialDrive1.arcadeDrive(0.0, -0.5);
+            differentialDrive1.arcadeDrive(0.0, -0.3);
         })
                 .until(angleReached);
     }
@@ -197,5 +197,12 @@ public class DriveTrain extends SubsystemBase {
         motorController2.set(pidR.calculate(velocity2 , currentspdr)+currentspdr/3.0);
         }).withName("PID").until(distReached);
   }
+  
+  /*public Command OdometryReset() {
+        return runOnce(() -> {
+            m_odometry.resetPosition(-ahrs.getAngle(), position1, position2, new Pose2d(4,7.5, new Rotation2d()));
+        })
+                .withName("OdometryReset").ignoringDisable(true);
+    }*/
 }
 
