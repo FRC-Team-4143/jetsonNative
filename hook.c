@@ -8,6 +8,7 @@
 
 #define __USE_GNU
 #include <dlfcn.h>
+#include <pigpio.h>
 
 int32_t HAL_CreateSimDevice(const char* name) {
 	printf("HAL_CreateSimDevice: %s\n", name);
@@ -105,6 +106,7 @@ HAL_ENUM(HAL_SerialPort) {
 */
 
 int serial_port = 0;
+int gpioInitialised = 0;
 
 int32_t HAL_InitializeSerialPort(int32_t port,
                                               int32_t* status) {
@@ -116,7 +118,6 @@ int32_t HAL_InitializeSerialPort(int32_t port,
 	}
 	set_interface_attribs (serial_port, 115200, 0);
 	set_blocking (serial_port, 0);
-
 	return 0;
 }
 
@@ -139,14 +140,14 @@ int32_t HAL_ReadSerial(int32_t handle, char* buffer, int32_t count,
                        int32_t* status) {
 	int32_t n = read(serial_port, buffer, count);
 	buffer[n+1] = 0;
-	printf("HAL_ReadSerial %d %s\n", n, buffer);
+	//printf("HAL_ReadSerial %d %s\n", n, buffer);
   	return n;
 }
 
 int32_t HAL_WriteSerial(int32_t handle, const char* buffer,
                         int32_t count, int32_t* status) {
 	int32_t n = write(serial_port, buffer, count);
-	printf("HAL_WriteSerial %d %s\n", n, buffer);
+	//printf("HAL_WriteSerial %d %s\n", n, buffer);
   	return n;
 }
 
@@ -154,4 +155,23 @@ void HAL_CloseSerial(int32_t handle, int32_t* status) {
 	printf("HAL_CloseSerial\n");
 	close(serial_port);
 	serial_port = 0;
+}
+
+void HAL_SetPWMPosition(int32_t pwmPortHandle, double position,
+                     int32_t* status) {
+	printf("Set PWM Position: %lf\n", position);
+	if(!gpioInitialised){
+		gpioInitialise();
+		gpioInitialised = 1;
+	}
+	gpioServo(14, position*1000+1000);
+}
+
+void HAL_SetPWMDisabled(int32_t pwmPortHandle, int32_t* status) {
+	printf("PWM Disable");
+	if(!gpioInitialised){
+		gpioInitialise();
+		gpioInitialised = 1;
+	}
+	gpioServo(14, 0);
 }
