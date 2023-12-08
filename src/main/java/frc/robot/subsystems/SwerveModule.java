@@ -12,7 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Encoder;
-import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.*;
 
 // import com.ctre.phoenix.motorcontrol.*;
 // import com.ctre.phoenix.motorcontrol.can.*;
@@ -57,7 +57,7 @@ public class SwerveModule {
     TalonFXConfiguration m_driveConfig = new TalonFXConfiguration();
     TalonFXConfiguration m_turningConfig = new TalonFXConfiguration();
     m_driveConfig.Feedback.SensorToMechanismRatio = 1 / ModuleConstants.kDriveEncoderDistancePerPulse;
-    m_turningConfig.Feedback.SensorToMechanismRatio = 1 / ModuleConstants.kTurningEncoderDistancePerPulse;
+    m_turningConfig.Feedback.SensorToMechanismRatio = -1 / ModuleConstants.kTurningEncoderDistancePerPulse;
 
     m_driveMotor.getConfigurator().apply(m_driveConfig);
     m_turningMotor.getConfigurator().apply(m_turningConfig);
@@ -106,7 +106,8 @@ public class SwerveModule {
 
     // Calculate the drive output from the drive PID controller.
     final double driveOutput =
-        m_drivePIDController.calculate(m_driveMotor.getVelocity().getValue(), state.speedMetersPerSecond);
+        m_drivePIDController.calculate(m_driveMotor.getVelocity().getValue(), state.speedMetersPerSecond)
+       + state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond;
 
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput =
@@ -114,7 +115,10 @@ public class SwerveModule {
 
     // send control requests
     m_driveMotor.set(driveOutput);
-    m_turningMotor.set(turnOutput);
+    m_turningMotor.set(-turnOutput);
+    SmartDashboard.putNumber("Turn Output " + id, -turnOutput);
+    SmartDashboard.putNumber("Drive Output " + id, driveOutput);
+    SmartDashboard.putNumber("Drive Set Speed " + id, state.speedMetersPerSecond);
   }
 
   /** Zeroes all the SwerveModule encoders. */
@@ -127,5 +131,7 @@ public class SwerveModule {
         // This method will be called once per scheduler run
       SmartDashboard.putNumber("Turn Position " + id, m_turningMotor.getPosition().getValue());
       SmartDashboard.putNumber("Drive Position " + id, m_driveMotor.getPosition().getValue());
+      SmartDashboard.putNumber("Turn Velocity " + id, m_turningMotor.getVelocity().getValue());
+      SmartDashboard.putNumber("Drive Velocity " + id, m_driveMotor.getVelocity().getValue());
     }
 }

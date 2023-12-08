@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 
 /*
@@ -43,6 +45,8 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    SmartDashboard.putData("Set Wheel Offsets",m_robotDrive.setWheelOffsets());
+
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -53,10 +57,9 @@ public class RobotContainer {
                     // Multiply by max speed to map the joystick unitless inputs to actual units.
                     // This will map the [-1, 1] to [max speed backwards, max speed forwards],
                     // converting them to actual units.
-                    m_driverController.getLeftY() * DriveConstants.kMaxSpeedMetersPerSecond,
-                    m_driverController.getLeftX() * DriveConstants.kMaxSpeedMetersPerSecond,
-                    m_driverController.getRightX()
-                        * ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
+                    m_driverController.getLeftY() * 3,
+                    m_driverController.getLeftX() * 3,
+                    -m_driverController.getRightX() * 5,
                     false),
             m_robotDrive));
   }

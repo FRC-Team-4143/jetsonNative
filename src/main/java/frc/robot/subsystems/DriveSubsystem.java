@@ -15,6 +15,8 @@ import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SerialPort;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj2.command.Command;
+
 
 public class DriveSubsystem extends SubsystemBase {
   // Robot swerve modules
@@ -23,7 +25,7 @@ public class DriveSubsystem extends SubsystemBase {
           DriveConstants.kFrontLeftDriveMotorPort,
           DriveConstants.kFrontLeftTurningMotorPort);
 
-  private final SwerveModule m_rearLeft =
+  /*private final SwerveModule m_rearLeft =
       new SwerveModule(
           DriveConstants.kRearLeftDriveMotorPort,
           DriveConstants.kRearLeftTurningMotorPort);
@@ -31,7 +33,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule m_frontRight =
       new SwerveModule(
           DriveConstants.kFrontRightDriveMotorPort,
-          DriveConstants.kFrontRightTurningMotorPort);
+          DriveConstants.kFrontRightTurningMotorPort);*/
 
   private final SwerveModule m_rearRight =
       new SwerveModule(
@@ -48,8 +50,8 @@ public class DriveSubsystem extends SubsystemBase {
           m_gyro.getRotation2d(),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
+            //m_frontRight.getPosition(),
+            //m_rearLeft.getPosition(),
             m_rearRight.getPosition()
           });
 
@@ -63,13 +65,13 @@ public class DriveSubsystem extends SubsystemBase {
         m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
+          //m_frontRight.getPosition(),
+          //m_rearLeft.getPosition(),
           m_rearRight.getPosition()
           
         });
         m_frontLeft.periodic();
-     m_rearRight.periodic();
+        m_rearRight.periodic();
   }
 
   /**
@@ -91,8 +93,8 @@ public class DriveSubsystem extends SubsystemBase {
         m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
+          //m_frontRight.getPosition(),
+          //m_rearLeft.getPosition(),
           m_rearRight.getPosition()
         },
         pose);
@@ -118,9 +120,9 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_rearLeft.setDesiredState(swerveModuleStates[2]);
-    m_rearRight.setDesiredState(swerveModuleStates[3]);
+    //m_frontRight.setDesiredState(swerveModuleStates[1]);
+    //m_rearLeft.setDesiredState(swerveModuleStates[2]);
+    m_rearRight.setDesiredState(swerveModuleStates[1]);
   }
 
   /**
@@ -132,16 +134,16 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(desiredStates[0]);
-    m_frontRight.setDesiredState(desiredStates[1]);
-    m_rearLeft.setDesiredState(desiredStates[2]);
+    //m_frontRight.setDesiredState(desiredStates[1]);
+    //m_rearLeft.setDesiredState(desiredStates[2]);
     m_rearRight.setDesiredState(desiredStates[3]);
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
   public void resetEncoders() {
     m_frontLeft.resetEncoders();
-    m_rearLeft.resetEncoders();
-    m_frontRight.resetEncoders();
+    //m_rearLeft.resetEncoders();
+    //m_frontRight.resetEncoders();
     m_rearRight.resetEncoders();
   }
 
@@ -161,11 +163,20 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Returns the turn rate of the robot.
+
    *
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  public Command setWheelOffsets(){
+   
+    return runOnce(() ->  {
+      m_frontLeft.resetEncoders();
+      m_rearRight.resetEncoders();
+      }).withName("setWheelOffsets").ignoringDisable(true);
   }
  
 }
