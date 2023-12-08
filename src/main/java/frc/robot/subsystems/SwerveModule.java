@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants.ModuleConstants;
 
@@ -24,6 +25,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 public class SwerveModule {
   private final TalonFX m_driveMotor;
   private final TalonFX m_turningMotor;
+  int id = 0;
+  
 
 
   private final PIDController m_drivePIDController =
@@ -50,11 +53,11 @@ public class SwerveModule {
       int turningMotorChannel) {
     m_driveMotor = new TalonFX(driveMotorChannel);
     m_turningMotor = new TalonFX(turningMotorChannel);
-    
+    id = driveMotorChannel;
     TalonFXConfiguration m_driveConfig = new TalonFXConfiguration();
     TalonFXConfiguration m_turningConfig = new TalonFXConfiguration();
-    m_driveConfig.Feedback.SensorToMechanismRatio = ModuleConstants.kDriveEncoderDistancePerPulse;
-    m_turningConfig.Feedback.SensorToMechanismRatio = ModuleConstants.kTurningEncoderDistancePerPulse;
+    m_driveConfig.Feedback.SensorToMechanismRatio = 1 / ModuleConstants.kDriveEncoderDistancePerPulse;
+    m_turningConfig.Feedback.SensorToMechanismRatio = 1 / ModuleConstants.kTurningEncoderDistancePerPulse;
 
     m_driveMotor.getConfigurator().apply(m_driveConfig);
     m_turningMotor.getConfigurator().apply(m_turningConfig);
@@ -119,4 +122,10 @@ public class SwerveModule {
     m_driveMotor.setPosition(0);
     m_turningMotor.setPosition(0);
   }
+    
+    public void periodic() {
+        // This method will be called once per scheduler run
+      SmartDashboard.putNumber("Turn Position " + id, m_turningMotor.getPosition().getValue());
+      SmartDashboard.putNumber("Drive Position " + id, m_driveMotor.getPosition().getValue());
+    }
 }
